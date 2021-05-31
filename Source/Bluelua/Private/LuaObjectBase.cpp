@@ -21,8 +21,8 @@
 DECLARE_CYCLE_STAT(TEXT("PushPropertyToLua"), STAT_PushPropertyToLua, STATGROUP_Bluelua);
 DECLARE_CYCLE_STAT(TEXT("FetchPropertyFromLua"), STAT_FetchPropertyFromLua, STATGROUP_Bluelua);
 
-static TMap<UClass*, FLuaObjectBase::PushPropertyFunction> GPusherMap;
-static TMap<UClass*, FLuaObjectBase::FetchPropertyFunction> GFetcherMap;
+static TMap<FFieldClass*, FLuaObjectBase::PushPropertyFunction> GPusherMap;
+static TMap<FFieldClass*, FLuaObjectBase::FetchPropertyFunction> GFetcherMap;
 
 template<typename T>
 static int PushBaseProperty(lua_State* L, UProperty* Property, void* Params, UObject* Object, bool)
@@ -130,14 +130,14 @@ void FLuaObjectBase::Init()
 	RegisterFetcher<UDelegateProperty>(FetchDelegateProperty);
 }
 
-FLuaObjectBase::PushPropertyFunction FLuaObjectBase::GetPusher(UClass* Class)
+FLuaObjectBase::PushPropertyFunction FLuaObjectBase::GetPusher(FFieldClass* Class)
 {
 	auto PusherIter = GPusherMap.Find(Class);
 
 	return PusherIter ? *PusherIter : nullptr;
 }
 
-FLuaObjectBase::FetchPropertyFunction FLuaObjectBase::GetFetcher(UClass* Class)
+FLuaObjectBase::FetchPropertyFunction FLuaObjectBase::GetFetcher(FFieldClass* Class)
 {
 	auto FetcherIter = GFetcherMap.Find(Class);
 
@@ -148,7 +148,7 @@ int FLuaObjectBase::PushProperty(lua_State* L, UProperty* Property, void* Params
 {
 	SCOPE_CYCLE_COUNTER(STAT_PushPropertyToLua);
 
-	UClass* PropertyClass = Property->GetClass();
+	FFieldClass* PropertyClass = Property->GetClass();
 	auto Pusher = GetPusher(PropertyClass);
 	if (Pusher)
 	{

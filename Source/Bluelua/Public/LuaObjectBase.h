@@ -13,8 +13,8 @@ public:
 	typedef bool(*FetchPropertyFunction)(lua_State* L, UProperty* Property, void* Params, int32 Index);
 
 	static void Init();
-	static PushPropertyFunction GetPusher(UClass* Class);
-	static FetchPropertyFunction GetFetcher(UClass* Class);
+	static PushPropertyFunction GetPusher(FFieldClass* Class);
+	static FetchPropertyFunction GetFetcher(FFieldClass* Class);
 
 	static int PushProperty(lua_State* L, UProperty* Property, void* Params, UObject* Object = nullptr, bool bCopyValue = true);
 	static int PushStructProperty(lua_State* L, UProperty* Property, void* Params, UObject* Object, bool bCopyValue = true);

@@ -214,7 +214,7 @@ int FLuaUObject::CallUFunction(lua_State* L)
 {
 	SCOPE_CYCLE_COUNTER(STAT_ObjectCallUFunction);
 
-	const bool bIsParentDefaultFunction = lua_toboolean(L, lua_upvalueindex(1));
+	const bool bIsParentDefaultFunction = lua_toboolean(L, lua_upvalueindex(1)) != 0;
 	UFunction* Function = (UFunction*)lua_touserdata(L, lua_upvalueindex(2));
 	FLuaUObject* LuaUObject = (FLuaUObject*)luaL_checkudata(L, 1, UOBJECT_METATABLE);
 	if (!LuaUObject->Source.IsValid())
